@@ -1,0 +1,61 @@
+.navigation_header {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 6rem;
+    top: 0;
+    left: 0;
+    z-index: 100;
+
+    .header_container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        height: inherit;
+
+        .container_logo {
+            padding: 0rem 3vh;
+        }
+
+        .container_search {
+            padding: 0 3vh;
+
+            .search_input {
+                width: 100% ;
+            }
+        }
+
+        .container_navigation {
+            display: flex;
+            justify-content: flex-end;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+
+            .navigation_list {
+                display: inherit;
+                width: inherit;
+                height: inherit;
+                list-style: none;
+
+                .list_item {
+                    display: inline-flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: inherit;
+                    height: inherit;
+
+                    .item_link {
+                        display: inherit;
+                        justify-content: inherit;
+                        align-items: inherit;
+                        width: inherit;
+                        height: inherit;
+                        position: relative;
+                    }
+                }
+            }
+        }
+    }
+}

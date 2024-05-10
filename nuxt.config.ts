@@ -2,9 +2,10 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   runtimeConfig: {
-    baseUrl: 'http://127.0.0.1:8000',
+    baseUrl: process.env.API_URL,
     public: {
-      baseURL: 'http://localhost:3000',
+      baseURL: process.env.PUBLIC_BASE_URL,
     },
   },
+  css: ['~/assets/scss/style.scss'],
 });

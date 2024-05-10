@@ -1,0 +1,13 @@
+@import './main.scss';
+
+// components
+@import './components/Input.scss';
+@import './components/Nav.scss';
+
+//layout
+@import './layouts/Default.scss';
+
+//pages
+@import './pages/Home.scss';
+@import './pages/Login.scss';
+@import './pages/Register.scss';

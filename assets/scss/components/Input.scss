@@ -1,0 +1,23 @@
+.input {
+    display: inherit;
+    flex-direction: inherit;
+
+    .form-label {
+        display: inherit;
+        margin: 0.5rem 0;
+    }
+
+    .form-input {
+        padding: 0.4rem 1rem;
+        min-height: 40px;
+        width: 100%;
+        border: 1px solid #bfbfbf;
+        border-radius: 7px;
+        transition: 0.3s;
+
+        &:hover {
+            border: 1px solid #666666;
+            transition: 0.3s;
+        }
+    }
+}
