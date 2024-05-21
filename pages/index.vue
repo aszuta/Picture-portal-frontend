@@ -15,15 +15,20 @@
             </li>
         </ul> -->
 
-        <div class="modal" :class="[isModalActive ? 'active' : '']" @click="isModalActive = false">
+        <!-- <div class="modal" :class="[isModalActive ? 'active' : '']" @click="isModalActive = false">
             <button class="btn" @click="isModalActive = false">X</button>
-            <img :src="`http://localhost:8000/${path}`" alt="" class="modal-item">
-        </div>
+            <img :src="`http://localhost:8000/${image}`" alt="" class="modal-item">
+        </div> -->
 
         <div class="container_grid">
-            <div class="grid_row" v-for="picture in data?.pictures" @click="openModal(picture.filepath)" @keydown="modalActive = false" :key="picture.id">
-                <img :src="`http://localhost:8000/${picture.filepath}`" alt="" class="image_container">
-            </div>
+            <Modal
+                v-for="picture in data?.pictures"
+                :key="picture.id"
+                :id="picture.id"
+                :name="picture.title"
+                :path="picture.filepath"
+                @path="getPath"
+            />
         </div>
     </div>
 </template>
@@ -33,7 +38,8 @@ const api = useApi();
 
 const file = ref<File | string> ('');
 let isModalActive = ref<boolean>(false);
-const path = ref<string>('');
+const image = ref<string>('');
+const route = useRoute();
 
 const handleFileChange = (fileData: Event) => {
     const fileInputData = fileData.target as HTMLInputElement;
@@ -41,6 +47,10 @@ const handleFileChange = (fileData: Event) => {
         file.value = fileInputData.files[0];
     }
 }
+
+function getPath(data: string) {
+    openModal(data);
+};
 
 async function submit() {
     try {
@@ -60,10 +70,15 @@ async function submit() {
     }
 }
 
+// async function openModal(id: number) {
+//     isModalActive.value = !isModalActive.value;
+//     result.value = id;
+// }
+
 function openModal(filepath: string) {
     isModalActive.value = !isModalActive.value;
-    path.value = filepath;
-    return path;
+    image.value = filepath;
+    return image;
 }
 
 const { data } = await useAsyncData('pictures', async () => {

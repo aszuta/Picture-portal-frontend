@@ -1,13 +1,22 @@
 <template>
-    <div class="navigation_header">
+    <header class="navigation_header">
         <div class="header_container">
             <div class="container_logo">Logo</div>
-            <div class="container_search">
-                <input type="text" class="search_input">
-            </div>
-            <nav class="container_navigation">
+            <div class="container_navigation">
+                <div class="container_search">
+                    <button class="search_icon">
+                        <font-awesome-icon :icon="['fas', 'magnifying-glass']" class="icon_search"/>
+                    </button>
+                    <input type="text" class="search_input" placeholder="Write something...">
+                    <button class="search_icon">
+                        <font-awesome-icon :icon="['fas', 'xmark']" class="icon_clear"/>
+                    </button>
+                </div>
                 <ul class="navigation_list">
-                    <li class="list_item">Dodaj</li>
+                    <li class="list_item">
+                        <button class="item_link">Add</button>
+                        <!-- <Modal v-if="isModalActive" @close="isModalActive = false"/> -->
+                    </li>
                     <li class="list_item">
                         <NuxtLink to="/login" class="item_link">Login</NuxtLink>
                     </li>
@@ -15,9 +24,9 @@
                         <NuxtLink to="/register" class="item_link">Register</NuxtLink>
                     </li>
                 </ul>
-            </nav>
+            </div>
         </div>
-    </div>
+    </header>
 </template>
 
 <script setup lang="ts">

@@ -7,5 +7,15 @@ export default defineNuxtConfig({
       baseURL: process.env.PUBLIC_BASE_URL,
     },
   },
-  css: ['~/assets/scss/style.scss'],
+  build: {
+    transpile: [
+      '@fortawesome/fontawesome-svg-core',
+      '@fortawesome/free-regular-svg-icons',
+      '@fortawesome/free-solid-svg-icons',
+    ],
+  },
+  css: [
+    '~/assets/scss/style.scss',
+    '@fortawesome/fontawesome-svg-core/styles.css',
+  ],
 });
