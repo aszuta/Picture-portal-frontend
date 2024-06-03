@@ -1,9 +1,12 @@
 @import './main.scss';
 
 // components
+@import './components/Comment.scss';
 @import './components/Input.scss';
-@import './components/Modal.scss';
+@import './components/GridCard.scss';
+@import './components/ModalCard.scss';
 @import './components/Nav.scss';
+@import './components//PictureCard.scss';
 
 //layout
 @import './layouts/Default.scss';
@@ -12,4 +15,5 @@
 @import './pages/Home.scss';
 @import './pages/Login.scss';
 @import './pages/picture/picture';
+@import './pages/profile/profile';
 @import './pages/Register.scss';

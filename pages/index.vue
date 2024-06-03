@@ -21,7 +21,7 @@
         </div> -->
 
         <div class="container_grid">
-            <Modal
+            <GridCard
                 v-for="picture in data?.pictures"
                 :key="picture.id"
                 :id="picture.id"
