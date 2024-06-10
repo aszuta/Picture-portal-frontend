@@ -1,10 +1,10 @@
 <template>
     <div class="login_container">
         <div class="container_content">
-            <form class="content_form" method="post">
+            <form class="content_form" method="post" @submit.prevent="login()">
                 <h1 class="form_title">Login</h1>
-                <Input type="text" placeholder="Email" name="email" label="Email " />
-                <Input type="password" placeholder="Password" name="password" label="Password "/>
+                <Input v-model="form.email" type="text" placeholder="Email" name="email" label="Email "/>
+                <Input v-model="form.password" type="password" placeholder="Password" name="password" label="Password "/>
                 <button type="submit" class="form_button">Zaloguj</button>
             </form>
             <div class="content_info">
@@ -16,5 +16,23 @@
 </template>
 
 <script setup lang="ts">
+import { useUserStore } from '../store/user';
 
+type Login = {
+    email: string,
+    password: string,
+};
+
+const form = ref<Login>({
+    email: '',
+    password: '',
+});
+
+async function login() {
+    try {
+        await useUserStore().loginUser(form.value);
+    } catch(error: any) {
+        console.log(error);
+    }
+};
 </script>
