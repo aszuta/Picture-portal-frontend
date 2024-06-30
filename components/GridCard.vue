@@ -1,8 +1,5 @@
 <template>
-   
-    
-    <div class="grid_row" >
-        
+  <div class="grid_row" >
         <NuxtLink :to="`/picture/${props.id}`">
           <img :src="`http://localhost:8000/${props.path}`" alt="" class="image_container" @click="$emit('path', props.path)">
         </NuxtLink>
@@ -28,43 +25,40 @@
                   </div>
                 </span>
               </div>
-            
           </div>
         </div>
 
-        <!-- <NuxtLink
+        <NuxtLink
           :to="{
             name: 'picture-id',
             params: { id: props.id}
           }"
-        >{{ props.id }}</NuxtLink> -->
-        <!-- {{ props.name }} -->
-
-        <!-- <div :class="[isModalActive ? 'modal' : '']" @click="isModalActive = false">
-            <button class="btn" @click="isModalActive = false">X</button>
-            <img :src="`http://localhost:8000/${dupa}`" alt="" class="modal-item">
-        </div> -->
-        
+          @click="test(props.id)"
+        >{{ props.id }}</NuxtLink>
+        {{ props.name }}
+        <Modal 
+          v-if="isModalActive" 
+          :id="props.id"
+          :data="data"
+          :relatedPictures="props.pictures"
+          @close="isModalActive = false"
+        />
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 const props = defineProps({
     id: undefined,
     name: undefined,
     path: undefined,
+    pictures: Object
 });
 
-// let isModalActive = ref<boolean>(false);
-const activeModal = ref<string>('');
-const router = useRouter();
+import { usePictureStore } from '~/store/picture';
 
-// function openModal(path: string) {
-//     isModalActive.value = !isModalActive.value;
-//     dupa.value = path;
-//     router.replace({ path: `/picture/${props.id}` });
-//     return dupa;
-// }
+let isModalActive = ref(false);
+
+const data = ref([]);
 
 onBeforeRouteLeave((to, from, next) => {
   if(to.name === 'picture-id') {
@@ -74,15 +68,24 @@ onBeforeRouteLeave((to, from, next) => {
   }
 });
 
-function openModal(route: any) {
-  activeModal.value = route.params.id;
-  console.log(activeModal);
+async function openModal(route) {
+  console.log(route);
   window.history.pushState({}, null, route.path);
-}
+};
 
-// function openModal(filepath: string) {
-//     isModalActive.value = !isModalActive.value;
-//     image.value = filepath;
-//     return image;
-// }
+async function test(id) {
+  isModalActive.value = true;
+  console.log(id);
+
+  props.pictures.map((item) => {
+    if (item.id == id) {
+      data.value = item;
+      console.log(data);
+      return {
+        data: item
+      };
+    }
+  });
+  usePictureStore().$state.currentPicture = id;
+};
 </script>

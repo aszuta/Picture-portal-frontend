@@ -14,8 +14,8 @@
                 </div>
                 <ul class="navigation_list">
                     <li class="list_item">
-                        <button class="item_link">Add</button>
-                        <!-- <Modal v-if="isModalActive" @close="isModalActive = false"/> -->
+                        <button class="item_link" @click="openModal()">Add</button>
+                        <Modal v-if="isModalActive" @close="isModalActive = false" file-form/>
                     </li>
                     <li class="list_item">
                         <NuxtLink to="/login" class="item_link">Login</NuxtLink>
@@ -29,6 +29,11 @@
     </header>
 </template>
 
-<script setup lang="ts">
+<script setup>
+let isModalActive = ref(false);
 
+function openModal() {
+    console.log(isModalActive.value);
+    isModalActive.value = !isModalActive.value;
+};
 </script>

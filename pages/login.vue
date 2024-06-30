@@ -15,23 +15,23 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { useUserStore } from '../store/user';
 
-type Login = {
-    email: string,
-    password: string,
-};
+const api = useApi();
 
-const form = ref<Login>({
+const form = {
     email: '',
     password: '',
-});
+};
 
 async function login() {
     try {
-        await useUserStore().loginUser(form.value);
-    } catch(error: any) {
+        await api('/api/auth/login', {
+            method: 'POST',
+            body: form.value
+        }).then(() => useUserStore().isLoggedIn = true);
+    } catch(error) {
         console.log(error);
     }
 };

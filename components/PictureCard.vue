@@ -43,10 +43,10 @@
     </section>
 </template>
 
-<script setup lang="ts">
+<script setup>
 const props = defineProps({
     title: String,
     path: String,
-    createdAt: Date,
+    createdAt: String,
 });
 </script>

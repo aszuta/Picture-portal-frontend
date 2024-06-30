@@ -22,7 +22,7 @@
     </main>
 </template>
 
-<script setup lang="ts">
+<script setup>
 const api = useApi();
 
 const { data } = await useAsyncData('profile', async () => {

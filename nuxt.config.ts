@@ -30,7 +30,4 @@ export default defineNuxtConfig({
       },
     },
   },
-  plugins: [
-    { src: '~/plugins/fontawesome.ts' },
-  ],
 });

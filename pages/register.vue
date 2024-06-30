@@ -16,24 +16,23 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { useUserStore } from '~/store/user';
 
-type Register = {
-    name: string,
-    email: string,
-    password: string
-};
+const api = useApi();
 
-const form = ref<Register>({
+const form = {
     name: '',
     email: '',
     password: ''
-});
+};
 
 async function register() {
     try {
-        await useUserStore().register(form.value);
+        await api('/api/user/register', {
+            method: 'POST',
+            body: form.value
+        }).then(() => useUserStore().isLoggedIn = true);
     } catch (error) {   
         console.log(error);
     }

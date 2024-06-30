@@ -17,10 +17,10 @@
     "@pinia/nuxt": "^0.5.1",
     "jwt-decode": "^4.0.0",
     "pinia": "^2.1.7",
-    "sass": "^1.75.0",
-    "sass-loader": "^14.2.0"
+    "sass": "^1.77.6",
+    "sass-loader": "^14.2.1"
   },
   "devDependencies": {
-    "nuxt": "^3.11.2"
+    "nuxt": "^3.12.2"
   }
 }
