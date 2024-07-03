@@ -18,20 +18,20 @@ export const useUserStore = defineStore('user', {
         },
 
         async intervalToken() {
-            // if (this.isLoggedIn) {
-            //     setInterval(async () => {
-            //         const cookie = useCookie('authcookie')?.value;
-            //         if (!cookie) return this.refresh();
+            if (this.isLoggedIn) {
+                setInterval(async () => {
+                    const cookie = useCookie('authcookie')?.value;
+                    if (!cookie) return this.refresh();
         
-            //         const decodedCookie = jwtDecode(cookie);
-            //         const expiration = decodedCookie.exp - 30;
-            //         const expDate = Date.now() / 1000;
+                    const decodedCookie = jwtDecode(cookie);
+                    const expiration = decodedCookie.exp - 30;
+                    const expDate = Date.now() / 1000;
                         
-            //         if (expDate > expiration) {
-            //             this.refresh();
-            //         }
-            //     }, 1000);
-            // };
+                    if (expDate > expiration) {
+                        this.refresh();
+                    }
+                }, 30000);
+            };
         },
 
         async refresh() {
