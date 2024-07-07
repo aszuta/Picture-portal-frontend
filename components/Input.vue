@@ -34,7 +34,7 @@ defineProps({
 
 const emit = defineEmits(['uploaded-file']);
 
-const file = '';
+let file = ref('');
 
 const handleFileChange = (fileData) => {
     const fileInputData = fileData.target;

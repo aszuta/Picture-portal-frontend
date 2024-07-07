@@ -5,9 +5,9 @@
             <template v-if="fileForm">
                 <h2 class="modal_title">Add picture</h2>
                 <form @submit.prevent="submit()" enctype="multipart/form-data" class="modal_form">
-                    <Input v-model="title" type="text"/>
+                    <Input v-model="title" label="Title" type="text"/>
                     <Input name="file" @uploaded-file="upload" is-file/>
-                    <button type="submit">Send</button>
+                    <button class="form_button" type="submit">Send</button>
                 </form>
                 <div class="preview">
                     <img :src="url" class="preview_img" />
@@ -15,16 +15,34 @@
             </template>
 
             <template v-else>
-                {{ props.id }}
-                <PictureCard
-                    :title="data?.title"
-                    :path="data?.filepath"
-                    :createdAt="data?.createdAt"
-                />
-                <Comment />
-                <ModalCard 
-                    :relatedPictures="relatedPictures"
-                />
+                <div class="modal_previous">
+                    <NuxtLink :to="{
+                            name: 'picture-id',
+                            params: { id: props.id}
+                        }" class="previous_button" @click="minus(props.number)">
+                        <font-awesome-icon :icon="['fas', 'angle-left']" />
+                    </NuxtLink>
+                </div>
+                <div class="modal_content">
+                    {{ props.number }}
+                    <PictureCard
+                        :title="data.title"
+                        :path="data.filepath"
+                        :createdAt="data.createdAt"
+                    />
+                    <Comment />
+                    <ModalCard 
+                        :relatedPictures="relatedPictures"
+                    />
+                </div>
+                <div class="modal_next">
+                    <NuxtLink :to="{
+                            name: 'picture-id',
+                            params: { id: props.id}
+                        }" class="next_button" @click="plus(props.number)">
+                        <font-awesome-icon :icon="['fas', 'angle-right']" />
+                    </NuxtLink>
+                </div>
             </template>
 
         </div>
@@ -32,12 +50,18 @@
 </template>
 
 <script setup>
+import { usePictureStore } from '~/store/picture';
+
 const props = defineProps({
     id: Number,
     fileForm: Boolean,
     picture: Object,
     relatedPictures: Object,
-    data: Object
+    data: Object,
+    number: {
+        type: Number,
+        default: 0
+    }
 });
 
 const file = ref('');
@@ -45,19 +69,23 @@ const title = ref('');
 let url = ref('');
 
 const api = useApi();
-console.log(props.data);
+
+const emit = defineEmits(['minus', 'plus']);
 
 const upload = (data) => {
-    url.value = URL.createObjectURL(data.value);
+    url.value = URL.createObjectURL(data);
     file.value = data.value;
 };
 
-function minus() {
-    console.log('-');
+async function minus(param) {
+    console.log(param);
+    const result = await usePictureStore().minus();
+    emit('minus', result);
 };
 
-function plus() {
-    console.log('+');
+async function plus() {
+    const result = await usePictureStore().plus();
+    emit('plus', result);
 } ;
 
 const submit = async () => {

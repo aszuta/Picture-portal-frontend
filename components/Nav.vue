@@ -14,7 +14,7 @@
                 </div>
                 <ul class="navigation_list">
                     <li class="list_item">
-                        <button class="item_link" @click="openModal()">Add</button>
+                        <button class="item_link item_button" @click="openModal()">Add</button>
                         <Modal v-if="isModalActive" @close="isModalActive = false" file-form/>
                     </li>
                     <li class="list_item">

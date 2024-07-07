@@ -40,9 +40,13 @@
           v-if="isModalActive" 
           :id="props.id"
           :data="data"
+          :number="props.index"
           :relatedPictures="props.pictures"
           @close="isModalActive = false"
+          @minus="siema"
+          @plus="siema"
         />
+        {{ props.index }}
     </div>
 </template>
 
@@ -51,16 +55,17 @@ const props = defineProps({
     id: undefined,
     name: undefined,
     path: undefined,
+    index: Number,
     pictures: Object
 });
 
 import { usePictureStore } from '~/store/picture';
 
 let isModalActive = ref(false);
-
 const data = ref([]);
 
 onBeforeRouteLeave((to, from, next) => {
+  console.log(to.value);
   if(to.name === 'picture-id') {
     openModal(to);
   } else {
@@ -68,24 +73,36 @@ onBeforeRouteLeave((to, from, next) => {
   }
 });
 
+const siema = (data) => {
+  console.log(data.id);
+  test(data.id);
+  window.history.pushState({}, null, `/picture/${data.id}`);
+}
+
 async function openModal(route) {
-  console.log(route);
+  console.log(route.path);
   window.history.pushState({}, null, route.path);
 };
 
 async function test(id) {
-  isModalActive.value = true;
-  console.log(id);
+  if(isModalActive != true) {
+    isModalActive.value = true;
+    usePictureStore().$state.currentIndex = props.index;
+    usePictureStore().$state.currentPicture = props.id;
+  }
+
+  if(isModalActive = true) document.body.style.overflow = 'hidden';
+  usePictureStore().$state.currentPictures = props.pictures;
 
   props.pictures.map((item) => {
+    // console.log(item);
     if (item.id == id) {
       data.value = item;
-      console.log(data);
+      console.log(data.value);
       return {
-        data: item
+        data
       };
     }
   });
-  usePictureStore().$state.currentPicture = id;
 };
 </script>
