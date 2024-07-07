@@ -2,11 +2,12 @@
     <div class="home_container">
         <div class="container_grid">
             <GridCard
-                v-for="picture in data?.pictures"
+                v-for="(picture, index) in data?.pictures"
                 :key="picture.id"
                 :id="picture.id"
                 :name="picture.title"
                 :path="picture.filepath"
+                :index="index"
                 :pictures="data?.pictures"
             />
         </div>

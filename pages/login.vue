@@ -29,7 +29,7 @@ async function login() {
     try {
         await api('/api/auth/login', {
             method: 'POST',
-            body: form.value
+            body: form
         }).then(() => useUserStore().isLoggedIn = true);
     } catch(error) {
         console.log(error);
