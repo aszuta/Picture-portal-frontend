@@ -1,4 +1,4 @@
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia';
 
 export const usePictureStore = defineStore('picture', {
     state: () => {
@@ -16,7 +16,7 @@ export const usePictureStore = defineStore('picture', {
             await $fetch(`/api/picture/${id}`);
         },
 
-        async minus() {
+        async showPrevPhoto() {
             if(this.currentIndex != null && this.currentPicture != null) {
                 this.currentIndex--;
                 this.currentPicture--;
@@ -24,7 +24,7 @@ export const usePictureStore = defineStore('picture', {
             }
         },
 
-        async plus() {
+        async showNextPhoto() {
             if(this.currentIndex != null && this.currentPicture != null) {
                 this.currentIndex++;
                 this.currentPicture++;
