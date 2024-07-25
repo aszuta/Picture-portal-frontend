@@ -1,27 +1,24 @@
 <template>
-    <main class="AppPage">
+    <AppPage>
         <PictureCard
             :title="data?.picture.title"
             :path="data?.picture.filepath"
             :createdAt="data?.picture.createdAt"
         />
-        <!-- <div class="article_main"> -->
-            
-        <Comment 
+        <CommentContainer 
             :postId="id"
             :comments="data?.comments"
         />
         <ModalCard 
             :relatedPictures="data?.relatedPictures"
         />
-        <!-- </div> -->
-    </main>
+    </AppPage>
 </template>
 
 <script setup>
 const api = useApi();
 const { id } = useRoute().params;
-const route = useRoute().name;
+const route = useRoute();
 console.log(route);
 
 const { data } = await useAsyncData('pictures', async () => {
