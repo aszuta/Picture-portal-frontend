@@ -12,7 +12,6 @@ export default defineNuxtPlugin(() => {
         const profile = await api('/api/auth/profile', {
             method: 'GET'
         });
-        console.log(profile);
         user.setUser(profile);
     }
 
@@ -37,7 +36,6 @@ export default defineNuxtPlugin(() => {
                 const decodedCookie = jwtDecode(cookie);
                 const expiration = decodedCookie.exp - 30;
                 const expDate = Date.now() / 1000;
-                console.log(cookie);
                     
                 if (expDate > expiration) {
                     await $fetch('/api/auth/refresh', {
