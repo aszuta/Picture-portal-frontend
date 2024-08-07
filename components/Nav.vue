@@ -3,15 +3,15 @@
         <div class="AppHeader__container">
             <div class="AppHeader__logo">Logo</div>
             <nav class="AppHeader__navigation">
-                <div class="AppHeader__navigation-search">
-                    <button class="AppHeader__search-button">
+                <form class="AppHeader__navigation-search" @submit.prevent="search()">
+                    <button class="AppHeader__search-button" @click="search()">
                         <font-awesome-icon :icon="['fas', 'magnifying-glass']" class="AppHeader__icon-left"/>
                     </button>
-                    <TextInput type="text" class="search_input" placeholder="Write something..." name="search"/>
-                    <button class="AppHeader__search-button">
+                    <TextInput v-model="input" type="text" placeholder="Write something..." name="search"/>
+                    <button class="AppHeader__search-button" @click="clear()">
                         <font-awesome-icon :icon="['fas', 'xmark']" class="AppHeader__icon-right"/>
                     </button>
-                </div>
+                </form>
                 <ul class="AppHeader__navigation-list">
                     <li class="AppHeader__list-item">
                         <button class="AppHeader__item AppHeader__item-button" @click="openModal()">Add</button>
@@ -38,9 +38,18 @@ const loggedIn = useUserStore().$state.isLoggedIn;
 const currentUser = useUserStore().$state.userProfile;
 let isModalActive = ref(false);
 const api = useApi();
+const router = useRouter();
+let input = ref('');
+
+function search() {
+    router.push(`/search/${input.value}`);
+}
+
+function clear() {
+    // input.value = '';
+};
 
 function openModal() {
-    console.log(isModalActive.value);
     isModalActive.value = !isModalActive.value;
 };
 
@@ -85,6 +94,11 @@ async function logout() {
 
     &__navigation {
         display: flex;
+        flex-grow: 1;
+    }
+
+    &__navigation-search {
+        display: flex;
         flex-direction: inherit;
         flex-grow: 1;
         height: 40px;
@@ -97,11 +111,10 @@ async function logout() {
         }
     }
 
-    &__navigation-search {
-        display: flex;
-        align-items: center;
-        background-color: initial;
-        padding: 0;
+    &__search-input {
+        width: 100% ;
+        border: none;
+        padding: 0 1vh;
     }
 
     &__search-button {
@@ -109,6 +122,12 @@ async function logout() {
         align-items: center;
         background-color: initial;
         padding: 0;
+        color: #9c9c9c;
+
+        &:hover {
+            color: #616161;
+            cursor: pointer;
+        }
     }
 
     &__icon-left {
