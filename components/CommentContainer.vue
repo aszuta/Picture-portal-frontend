@@ -1,56 +1,40 @@
 <template>
     <section class="CommentsSection">
-        <CommentForm/>
+        <CommentForm 
+            v-if="isLoggedIn === true"
+            :postId="props.postId"
+        />
         <div class="CommentsSection__comments">
-            <div class="CommentSection__container">
             <h2 class="CommentsSection__title">Comments</h2>
-            <div class="CommentsSection__avatar">
-                <font-awesome-icon :icon="['fas', 'user']" />
-            </div>
             <Comment 
                 v-for="comment in props.comments" 
                 :key="comment.id"
                 :name="comment.name"
                 :content="comment.content"
             />
-            </div>
         </div>
     </section>
 </template>
 
 <script setup>
+import { useUserStore } from '~/store/user';
+
 const props = defineProps({
+    postId: String,
     comments: Object
 });
+
+const isLoggedIn = useUserStore().isLoggedIn;
 </script>
 
 <style lang="scss">
 .CommentsSection {
-    display: flex;
-    flex-direction: column;
     padding-top: 50px;
     padding-inline: 20px;
 
-    &__avatar {
-        background-color: #8c8c8c;
-        border-radius: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-    }
-
     &__comments {
-        display: inline-flex;
         width: 100%;
         padding-top: 20px;
-    }
-
-    &__container {
-        display: flex;
-        align-items: center;
-        gap: 10px;
     }
 
     &__title {

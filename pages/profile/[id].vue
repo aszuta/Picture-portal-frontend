@@ -1,5 +1,5 @@
 <template>
-    <AppPage>
+    <AppPage name="profile">
         <div class="AppPage__profile">
             <div class="AppPage__profile-container">
                 <img class="AppPage__profile-avatar" src="../../assets/default_profile_image.png" alt="" >
@@ -19,18 +19,31 @@
                 </li>
             </ul>
         </div>
+        <div class="AppPage__grid">
+            <GridCard
+                v-for="(picture, index) in data?.pictures"
+                :key="picture.id"
+                :id="picture.id"
+                :name="picture.title"
+                :path="picture.filepath"
+                :createdBy="picture.createdBy"
+                :index="index"
+                :pictures="data?.pictures"
+            />
+        </div>
     </AppPage>
 </template>
 
 <script setup>
 const api = useApi();
-
 const route = useRoute().params.id;
 
 const { data } = await useAsyncData('profile', async () => {
     const profile = await api(`/api/user/${route}`);
+    const pictures = await api(`/api/picture/file/${profile.id}`);
     return {
-        profile
+        profile,
+        pictures
     };
 });
 </script>
@@ -77,6 +90,7 @@ const { data } = await useAsyncData('profile', async () => {
         box-shadow: 0 1px #0000001f;
         width: 50%;
         margin-top: 50px;
+        margin-bottom: 20px;
     }
 
     &__buttons-list {

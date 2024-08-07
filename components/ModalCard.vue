@@ -26,10 +26,6 @@ const props = defineProps({
     padding-top: 50px;
     padding-inline: 20px;
 
-    &__title-container {
-
-    }
-
     &__title {
         display: flex;
         flex-direction: column;

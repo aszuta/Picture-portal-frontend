@@ -1,7 +1,12 @@
 <template>
-    <div class="CommentsSection__comment">
-        <div class="CommentsSection__user">{{ props.name }}</div>
-        <div class="CommentsSection__text">{{ props.content }}</div>
+    <div class="CommentsSection__container">
+        <div class="CommentsSection__avatar">
+            <font-awesome-icon :icon="['fas', 'user']" />
+        </div>
+        <div class="CommentsSection__comment">
+            <div class="CommentsSection__user">{{ props.name }}</div>
+            <div class="CommentsSection__text">{{ props.content }}</div>
+        </div>
     </div>
 </template>
 
@@ -14,6 +19,22 @@ const props = defineProps({
 
 <style lang="scss">
 .CommentsSection {
+
+    &__container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    &__avatar {
+        background-color: #8c8c8c;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+    }
 
     &__comment {
         display: flex;

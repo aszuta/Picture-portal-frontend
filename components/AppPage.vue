@@ -1,11 +1,13 @@
 <template>
-    <main :class="`AppPage AppPage--${route}`" >
+    <main :class="`AppPage AppPage--${props.name}`" >
         <slot></slot>
     </main>
 </template>
 
 <script setup>
-const route = useRoute().name;
+const props = defineProps({
+    name: String 
+});
 </script>
 
 
@@ -16,16 +18,16 @@ const route = useRoute().name;
     align-items: center;
     flex-direction: column;
 
-    &--profile-id {
+    &--profile {
         padding-top: 9rem;
     }
 
-    &--picture-id {
+    &--picture {
         padding-top: 6rem;
         width: 100%;
     }
 
-    &--index {
+    &--home {
         padding-top: 9rem;
     }
 
@@ -39,6 +41,17 @@ const route = useRoute().name;
         margin-inline: auto;
         padding-top: 6rem;
         max-width: 600px;
+    }
+}
+
+@media screen and (min-width: 768px){
+    .AppPage {
+
+        &--home {
+            max-width: 1320px;
+            width: 100%;
+            margin-inline: auto;
+        }
     }
 }
 </style>

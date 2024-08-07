@@ -1,5 +1,5 @@
 <template>
-    <AppPage>
+    <AppPage name="register">
         <div class="AppPage__register-container">
             <form class="AppPage__register-form" method="post" @submit.prevent="register()">
                 <h1 class="AppPage__form-title">Register</h1>
@@ -31,7 +31,7 @@ async function register() {
     try {
         await api('/api/user/register', {
             method: 'POST',
-            body: form.value
+            body: form
         }).then(() => {
             useUserStore().isLoggedIn = true;
             navigateTo('/');

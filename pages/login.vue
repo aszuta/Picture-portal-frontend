@@ -1,5 +1,5 @@
 <template>
-    <AppPage>
+    <AppPage name="login">
         <div class="AppPage__login-container">
             <form class="AppPage__login-form" method="post" @submit.prevent="login()">
                 <h1 class="AppPage__form-title">Login</h1>

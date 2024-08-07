@@ -10,11 +10,12 @@
                 </NuxtLink>
             </div>
             <div class="Modal__content">
-                {{ props.number }}
                 <PictureCard
+                    :id="props.id"
                     :title="data.title"
                     :path="data.filepath"
                     :createdAt="data.createdAt"
+                    :tags="data.tags"
                 />
                 <Comment />
                 <ModalCard 
@@ -42,16 +43,11 @@ const props = defineProps({
     picture: Object,
     relatedPictures: Object,
     data: Object,
-    number: {
-        type: Number,
-        default: 0
-    }
 });
 
 const emit = defineEmits(['minus', 'plus']);
 
 async function showPrevPhoto(param) {
-    console.log(param);
     const result = await usePictureStore().showPrevPhoto();
     emit('minus', result);
 };

@@ -1,9 +1,11 @@
 <template>
-    <AppPage>
+    <AppPage name="profile">
         <PictureCard
+            :id="data?.picture.id"
             :title="data?.picture.title"
             :path="data?.picture.filepath"
             :createdAt="data?.picture.createdAt"
+            :tags="data?.picture.tags"
         />
         <CommentContainer 
             :postId="id"

@@ -1,5 +1,5 @@
 <template>
-    <AppPage>
+    <AppPage name="home">
         <div class="AppPage__grid">
             <GridCard
                 v-for="(picture, index) in data?.pictures"
@@ -8,6 +8,7 @@
                 :name="picture.title"
                 :path="picture.filepath"
                 :createdBy="picture.createdBy"
+                :votes="picture.votes"
                 :index="index"
                 :pictures="data?.pictures"
             />
