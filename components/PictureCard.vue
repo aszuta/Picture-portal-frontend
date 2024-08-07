@@ -11,10 +11,10 @@
                     </span>
                 </div>
                 <div class="PictureSection__buttons">
-                    <button class="PictureSection__button">
-                        <font-awesome-icon :icon="['fas', 'heart']" />
+                    <button class="PictureSection__button" :class="isLikeActive ? 'PictureSection__button--like-active' : ''" @click="like()">
+                        <font-awesome-icon :icon="['fas', 'heart']"/>
                     </button>
-                    <button class="PictureSection__button">
+                    <button class="PictureSection__button" :class="isSaveActive ? 'PictureSection__button--save-active' : ''" @click="save()">
                         <font-awesome-icon :icon="['fas', 'plus']" />
                     </button>
                 </div>
@@ -25,6 +25,10 @@
         </div>
         <div class="PictureSection__info">
             <div class="PictureSection__info-container">
+                <div class="PictureSection__container-likes">
+                    Likes
+                    <div class="PictureSection__likes">90</div>
+                </div>
                 <h1 class="PictureSection__container-title">{{ props.title }}</h1>
                 <div class="PictureSection__container-description">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -37,18 +41,87 @@
                 </div>
             </div>
             <div class="PictureSection__tags">
-                <NuxtLink class="PictureSection__tags-item">Technology</NuxtLink>
+                <NuxtLink class="PictureSection__tags-item" v-for="(tag, index) in tags" :key="index">
+                    {{ tag.name }}
+                </NuxtLink>
             </div>
         </div>
     </section>
 </template>
 
 <script setup>
+import { useUserStore } from '~/store/user';
+
 const props = defineProps({
+    id: Number,
     title: String,
     path: String,
     createdAt: String,
+    tags: Object,
 });
+
+const user = useUserStore().userProfile;
+const isLoggedIn = useUserStore().isLoggedIn;
+const api = useApi();
+const isLikeActive = ref(false);
+const isSaveActive = ref(false);
+
+async function like() {
+    const payload = {
+        postId: props.id,
+        vote: {
+            userId: user.id,
+            voteType: 'voteUp',
+        },
+    };
+
+    if (isLikeActive.value === false) {
+        await api(`/api/vote/${payload.postId}`, {
+            method: 'POST',
+            body: payload.vote,
+        }).then(() => isLikeActive.value = true);
+    } else {
+        await api(`/api/vote/${payload.postId}`,{
+            method: 'DELETE',
+            body: payload.vote,
+        }).then(() => isLikeActive.value = false);
+    }
+};
+
+async function save() {
+    const payload = {
+        userId: user.id,
+        postId: props.id,
+    };
+    
+    if (isSaveActive.value === false) {
+        await api('/api/save', {
+            method: 'POST',
+            body: payload,
+        }).then(() => isSaveActive.value = true);
+    } else {
+        await api('/api/save', {
+            method: 'DELETE',
+            body: payload,
+        }).then(() => isSaveActive.value = false);
+    }
+};
+
+async function getLikes() {
+    const data = await api(`/api/vote?postId=${props.id}&userId=${user.id}`);
+    if (data.voteType === 'voteUp') isLikeActive.value = true;
+};
+
+async function getSavedPosts() {
+    const result = await api(`/api/save?userId=${user.id}&postId=${props.id}`);
+    console.log(props.id);
+    if (result === 'true') isSaveActive.value = true;
+}
+
+if (isLoggedIn === true) {
+    getLikes();
+    getSavedPosts();
+}
 </script>
 
 <style lang="scss">
@@ -104,8 +177,31 @@ const props = defineProps({
         color: #666666;
         transition: 0.1s;
 
+        &--like-active {
+            background-color: #eb2f2f;
+            color: white;
+            border: 1px solid #eb2f2f;
+
+            &:hover {
+                background-color: #ed5858;
+                color: white;
+                border: 1px solid #ed5858;
+            }
+        }
+
+        &--save-active {
+            background-color: black;
+            color: white;
+            border: 1px solid black;
+
+            &:hover {
+                background-color: #403e3e;
+                color: white;
+                border: 1px solid #403e3e;
+            }
+        }
+
         &:hover {
-            color: #1a1a1a;
             border: 1px solid #1a1a1a;
         }
     }
@@ -124,11 +220,24 @@ const props = defineProps({
         max-width: 600px;
     }
 
+    &__container-likes {
+        display: flex;
+        flex-direction: column;
+        color: #767676;
+        font-size: 14px;
+    }
+
+    &__likes {
+        color: black;
+        font-weight: 500;
+    }
+
     &__container-title {
         font-size: 18px;
         font-weight: 600;
         line-height: 1.5rem;
         text-align: left;
+        padding-top: 8px;
     }
 
     &__container-description {
