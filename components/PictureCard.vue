@@ -21,7 +21,7 @@
             </header>
         </div>
         <div class="PictureSection__picture">
-            <img :src="`http://localhost:8000/${props.path}`" alt="">
+            <img :src="`http://localhost:8000/${props.pictureCard.filepath}`" alt="">
         </div>
         <div class="PictureSection__info">
             <div class="PictureSection__info-container">
@@ -29,7 +29,7 @@
                     Likes
                     <div class="PictureSection__likes">90</div>
                 </div>
-                <h1 class="PictureSection__container-title">{{ props.title }}</h1>
+                <h1 class="PictureSection__container-title">{{ props.pictureCard.title }}</h1>
                 <div class="PictureSection__container-description">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                 </div>
@@ -37,11 +37,11 @@
                     <div class="PictureSection__date-icon">
                         <font-awesome-icon :icon="['fas', 'calendar']" />
                     </div>
-                     Published on: {{ props.createdAt }}
+                     Published on: {{ props.pictureCard.createdAt }}
                 </div>
             </div>
             <div class="PictureSection__tags">
-                <NuxtLink class="PictureSection__tags-item" v-for="(tag, index) in tags" :key="index">
+                <NuxtLink class="PictureSection__tags-item" v-for="(tag, index) in props.pictureCard.tags" :key="index">
                     {{ tag.name }}
                 </NuxtLink>
             </div>
@@ -53,11 +53,7 @@
 import { useUserStore } from '~/store/user';
 
 const props = defineProps({
-    id: Number,
-    title: String,
-    path: String,
-    createdAt: String,
-    tags: Object,
+    pictureCard: Object,
 });
 
 const user = useUserStore().userProfile;
@@ -67,8 +63,9 @@ const isLikeActive = ref(false);
 const isSaveActive = ref(false);
 
 async function like() {
-    const payload = {
-        postId: props.id,
+    try {
+        const payload = {
+        postId: props.pictureCard.id,
         vote: {
             userId: user.id,
             voteType: 'voteUp',
@@ -81,44 +78,49 @@ async function like() {
             body: payload.vote,
         }).then(() => isLikeActive.value = true);
     } else {
-        await api(`/api/vote/${payload.postId}`,{
-            method: 'DELETE',
-            body: payload.vote,
+        await api(`/api/vote?postId=${payload.postId}&userId=${payload.vote.userId}`,{
+            method: 'DELETE'
         }).then(() => isLikeActive.value = false);
+    }
+    } catch (error) {
+        console.log(error);
     }
 };
 
 async function save() {
-    const payload = {
+    try {
+        const payload = {
         userId: user.id,
-        postId: props.id,
+        postId: props.pictureCard.id,
     };
     
     if (isSaveActive.value === false) {
-        await api('/api/save', {
+        await api('/api/savePost', {
             method: 'POST',
             body: payload,
         }).then(() => isSaveActive.value = true);
     } else {
-        await api('/api/save', {
-            method: 'DELETE',
-            body: payload,
+        await api(`/api/savePost?userId=${payload.userId}&postId=${payload.postId}`, {
+            method: 'DELETE'
         }).then(() => isSaveActive.value = false);
+    }
+    } catch (error) {
+        console.log(error);
     }
 };
 
 async function getLikes() {
-    const data = await api(`/api/vote?postId=${props.id}&userId=${user.id}`);
+    const data = await api(`/api/vote?postId=${props.pictureCard.id}&userId=${user.id}`);
     if (data.voteType === 'voteUp') isLikeActive.value = true;
 };
 
 async function getSavedPosts() {
-    const result = await api(`/api/save?userId=${user.id}&postId=${props.id}`);
-    console.log(props.id);
+    const result = await api(`/api/savePost?userId=${user.id}&postId=${props.pictureCard.id}`);
+    console.log(props.pictureCard.id);
     if (result === 'true') isSaveActive.value = true;
 }
 
-if (isLoggedIn === true) {
+if (isLoggedIn) {
     getLikes();
     getSavedPosts();
 }

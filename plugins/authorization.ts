@@ -13,20 +13,22 @@ export default defineNuxtPlugin(() => {
             method: 'GET'
         });
         user.setUser(profile);
+        console.log(profile);
     }
 
     if (cookie.value) {
         isLoggedIn.value = true;
     }
 
-    if (user.$state.isLoggedIn == true) {
+    if (user.$state.isLoggedIn) {
         getUser();
     }
 
     if (import.meta.client) {
-        if (user.$state.isLoggedIn == true) {
+        if (user.$state.isLoggedIn) {
             setInterval(async () => {
                 const cookie = useCookie('authcookie')?.value;
+                console.log(cookie);
                 if (!cookie) {
                     return await $fetch('/api/auth/refresh', {
                         credentials: 'include',
@@ -42,7 +44,7 @@ export default defineNuxtPlugin(() => {
                         credentials: 'include',
                     });
                 }
-            }, 30000);
+            }, 1000);
         }
     }
 });

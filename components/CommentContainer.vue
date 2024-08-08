@@ -1,7 +1,7 @@
 <template>
     <section class="CommentsSection">
         <CommentForm 
-            v-if="isLoggedIn === true"
+            v-if="isLoggedIn"
             :postId="props.postId"
         />
         <div class="CommentsSection__comments">

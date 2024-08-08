@@ -117,44 +117,50 @@ async function test(id) {
 };
 
 async function like() {
+  try {
     const payload = {
-        postId: props.id,
-        vote: {
-            userId: user.id,
-            voteType: 'voteUp',
-        },
+      postId: props.id,
+      vote: {
+        userId: user.id,
+        voteType: 'voteUp',
+      },
     };
 
     if (isLikeActive.value === false) {
-        await api(`/api/vote/${payload.postId}`, {
-            method: 'POST',
-            body: payload.vote,
-        }).then(() => isLikeActive.value = true);
+      await api(`/api/vote/${payload.postId}`, {
+          method: 'POST',
+          body: payload.vote,
+      }).then(() => isLikeActive.value = true);
     } else {
-        await api(`/api/vote/${payload.postId}`,{
-            method: 'DELETE',
-            body: payload.vote,
-        }).then(() => isLikeActive.value = false);
+      await api(`/api/vote?postId=${payload.postId}&userId=${payload.vote.userId}`,{
+          method: 'DELETE'
+      }).then(() => isLikeActive.value = false);
     }
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 async function save() {
+  try {
     const payload = {
-        userId: user.id,
-        postId: props.id,
+      userId: user.id,
+      postId: props.id,
     };
     
-    if (isSaveActive.value === false) {
-        await api('/api/save', {
-            method: 'POST',
-            body: payload,
-        }).then(() => isSaveActive.value = true);
+    if (!isSaveActive.value) {
+      await api('/api/savePost', {
+        method: 'POST',
+        body: payload,
+      }).then(() => isSaveActive.value = true);
     } else {
-        await api('/api/save', {
-            method: 'DELETE',
-            body: payload,
-        }).then(() => isSaveActive.value = false);
+      await api(`/api/savePost?userId=${payload.userId}&postId=${payload.postId}`, {
+        method: 'DELETE'
+      }).then(() => isSaveActive.value = false);
     }
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 async function getLikes(postId, userId) {
@@ -164,12 +170,12 @@ async function getLikes(postId, userId) {
 };
 
 async function getSavedPosts(userId, postId) {
-    const result = await api(`/api/save?userId=${userId}&postId=${postId}`);
+    const result = await api(`/api/savePost?userId=${userId}&postId=${postId}`);
     console.log(result);
     if (result === 'true') isSaveActive.value = true;
 }
 
-if (isLoggedIn === true) {
+if (isLoggedIn) {
     getLikes(props.id, user.id);
     getSavedPosts(user.id, props.id);
 }
