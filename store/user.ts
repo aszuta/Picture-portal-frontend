@@ -4,14 +4,14 @@ export const useUserStore = defineStore('user', {
     state: () => {
         return {
             isLoggedIn: false as Boolean,
-            userProfile: [] as Array<any>
+            userProfile: {} as Object
         };
     },
 
     getters: {},
 
     actions: {
-        setUser (user: any) {
+        setUser (user: Object) {
             this.userProfile = user;
         },
     },

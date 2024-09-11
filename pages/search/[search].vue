@@ -9,8 +9,9 @@
                 :name="picture.title"
                 :path="picture.filepath"
                 :createdBy="picture.createdBy"
+                :username="picture.username"
                 :index="index"
-                :pictures="data?.pictures"
+                :pictures="data?.searchedPictures"
             />
         </div>
     </AppPage>

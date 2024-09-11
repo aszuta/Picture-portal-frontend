@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   devtools: { enabled: process.env.NODE_ENV === 'development' },
   runtimeConfig: {
-    baseUrl: process.env.BASE_URL,
+    baseURL: process.env.BASE_URL,
     public: {
       baseURL: process.env.PUBLIC_BASE_URL,
     },

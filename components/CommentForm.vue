@@ -82,7 +82,7 @@ async function submit() {
     }
 }
 
-@media screen and (min-width: 768px){
+@media screen and (min-width: 768px) {
     .CommentsSection {
         max-width: 1320px;
         width: 100%;

@@ -26,7 +26,7 @@ const handleFileChange = (fileData) => {
 </script>
 
 <style lang="scss">
-.TextInput {
+.FileInput {
     display: inherit;
     flex-direction: inherit;
 
@@ -36,12 +36,12 @@ const handleFileChange = (fileData) => {
     }
 
     &__field {
-        padding: 0.4rem 1rem;
-        min-height: 40px;
         width: 100%;
-        border: 1px solid #bfbfbf;
-        border-radius: 7px;
-        transition: 0.3s;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
 
         &:hover {
             border: 1px solid #666666;

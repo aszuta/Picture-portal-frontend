@@ -38,14 +38,23 @@ const isLoggedIn = useUserStore().isLoggedIn;
     }
 
     &__title {
+        display: flex;
+        flex-direction: column;
         margin-bottom: 24px;
         line-height: 1.5rem;
     }
 }
 
-@media screen and (min-width: 768px){
+@media screen and (max-width: 767px) {
     .CommentsSection {
-        max-width: 1320px;
+        max-width: 600px;
+        width: 100%;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .CommentsSection {
+        max-width: 1300px;
         width: 100%;
         margin-inline: auto;
     }

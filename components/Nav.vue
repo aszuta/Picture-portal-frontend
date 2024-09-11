@@ -1,56 +1,85 @@
 <template>
     <header class="AppHeader">
         <div class="AppHeader__container">
-            <div class="AppHeader__logo">Logo</div>
+            <NuxtLink to="/" class="AppHeader__logo-container">
+                <img class="AppHeader__logo" src="../assets/logo.PNG">
+            </NuxtLink>
             <nav class="AppHeader__navigation">
                 <form class="AppHeader__navigation-search" @submit.prevent="search()">
                     <button class="AppHeader__search-button" @click="search()">
                         <font-awesome-icon :icon="['fas', 'magnifying-glass']" class="AppHeader__icon-left"/>
                     </button>
                     <TextInput v-model="input" type="text" placeholder="Write something..." name="search"/>
-                    <button class="AppHeader__search-button" @click="clear()">
+                    <button v-if="input != ''" class="AppHeader__search-button" @click.prevent="clear()">
                         <font-awesome-icon :icon="['fas', 'xmark']" class="AppHeader__icon-right"/>
                     </button>
                 </form>
-                <ul class="AppHeader__navigation-list">
+                <button class="AppHeader__hamburger" @click="open">
+                    <span></span>
+                    <span :class="[isNavigationActive ? 'AppHeader__hamburger-span' : '']"></span>
+                    <span></span>
+                </button>
+                <ul class="AppHeader__navigation-list" :class="{ 'AppHeader__navigation-list--active': isNavigationActive }" @click="isNavigationActive = false" @keydown="isNavigationActive = false">
                     <li class="AppHeader__list-item">
                         <button class="AppHeader__item AppHeader__item-button" @click="openModal()">Add</button>
-                        <UploadPictureModal v-if="isModalActive" @close="isModalActive = false" file-form/>
                     </li>
                     <li class="AppHeader__list-item">
-                        <NuxtLink v-if="loggedIn === false" to="/login" class="item_link">Login</NuxtLink>
-                        <NuxtLink v-else :to="`/profile/${currentUser.id}`">{{ currentUser.name }}</NuxtLink>
+                        <NuxtLink v-if="!userStore.isLoggedIn" to="/login" class="AppHeader__item">Login</NuxtLink>
+                        <NuxtLink v-else :to="`/profile/${userStore.userProfile.id}`">{{ userStore.userProfile.name }}</NuxtLink>
                     </li>
                     <li class="AppHeader__list-item">
-                        <NuxtLink v-if="loggedIn === false" to="/register" class="item_link">Register</NuxtLink>
+                        <NuxtLink v-if="!userStore.isLoggedIn" to="/register" class="AppHeader__item">Register</NuxtLink>
                         <button v-else class="AppHeader__item AppHeader__item-button" @click.prevent="logout()" >Logout</button>
                     </li>
                 </ul>
             </nav>
+            <UploadPictureModal v-if="isModalActive" @close="isModalActive = false" file-form/>
         </div>
     </header>
 </template>
 
 <script setup>
 import { useUserStore } from '~/store/user';
+const userStore = useUserStore();
 
-const loggedIn = useUserStore().$state.isLoggedIn;
-const currentUser = useUserStore().$state.userProfile;
 let isModalActive = ref(false);
+let isNavigationActive = ref(false);
+let isMobileView = ref(false);
 const api = useApi();
 const router = useRouter();
-let input = ref('');
+const input = ref('');
 
 function search() {
     router.push(`/search/${input.value}`);
 }
 
 function clear() {
-    // input.value = '';
+    input.value = '';
 };
 
+function open() {
+    isNavigationActive.value = !isNavigationActive.value;
+};
+
+function handleResize() {
+  isMobileView.value = window.innerWidth <= 600;
+}
+
+onMounted(() => {
+  handleResize();
+  window.addEventListener('resize', handleResize);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize);
+});
+
 function openModal() {
-    isModalActive.value = !isModalActive.value;
+    if (userStore.isLoggedIn) {
+        isModalActive.value = !isModalActive.value;
+    } else {
+        router.push('/login');
+    }
 };
 
 async function logout() {
@@ -83,17 +112,22 @@ async function logout() {
         height: inherit;
         background-color: #fffcfa;
         max-width: 1440px;
-        width: 100%;
+        box-shadow: 0 1px 4px rgb(146 161 176 / 15%);
     }
 
-    &__logo {
+    &__logo-container {
         padding: 0 3vh;
         font-weight: 500;
         z-index: 5;
     }
 
+    &__logo {
+        width: 35px;
+    }
+
     &__navigation {
         display: flex;
+        align-items: center;
         flex-grow: 1;
     }
 
@@ -104,10 +138,17 @@ async function logout() {
         height: 40px;
         border-radius: 17px;
         box-shadow: 0 0 0 1px #d9d9d9;
+        background-color: #fffcfa;
+        transition: 0.3s;
 
         &:focus {
             background-color: white;
             outline: none;
+        }
+
+        &:hover {
+            background-color: #eeeded;
+            transition: 0.3s;
         }
     }
 
@@ -120,7 +161,7 @@ async function logout() {
     &__search-button {
         display: flex;
         align-items: center;
-        background-color: initial;
+        background-color: transparent;
         padding: 0;
         color: #9c9c9c;
 
@@ -138,10 +179,56 @@ async function logout() {
         padding-right: 15px;
     }
 
+    &__hamburger {
+        width: 6rem;
+        height: 6rem;
+        position: relative;
+        background: transparent;
+        margin-left: 5px;
+        z-index: 5;
+
+        > span:first-child {
+            top: 1rem;
+        }
+        
+        > span {
+            display: block;
+            width: 1.6rem;
+            height: 0.2rem;
+            margin: auto;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-color: rgb(0, 0, 0);
+            transition: left 0.32s;
+        }
+        
+        > span:last-child {
+            bottom: 1rem;
+        }
+    }
+
+    &__hamburger-span:nth-child(2) {
+        left: -1rem;
+    }
+
     &__navigation-list {
         display: inherit;
-        height: inherit;
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        right: -100%;
         list-style: none;
+        background-color: #fffcfa;
+        transition: right 0.3s;
+
+        &--active {
+            right: 0;
+            flex-direction: column;
+        }
     }
 
     &__list-item {
@@ -158,6 +245,12 @@ async function logout() {
         align-items: inherit;
         height: inherit;
         position: relative;
+        text-decoration: none;
+        color: #6d6d6d;
+
+        &:hover {
+            color: black;
+        }
     }
 
     &__item-button {
@@ -169,6 +262,39 @@ async function logout() {
         &:hover {
             background-color: #eeeded;
             cursor: pointer;
+        }
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .AppHeader {
+
+        &__navigation-list {
+            flex-direction: column;
+            height: 30%;
+            padding-top: 6rem;
+            box-shadow: 0 1px 4px rgb(146 161 176 / 15%);
+        }
+
+        &__item-button {
+            padding: 20px 40px;
+        }
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .AppHeader {
+
+        &__hamburger {
+            display: none;
+        }
+
+        &__navigation-list {
+            align-items: center;
+            width: auto;
+            padding: 0 2vw;
+            position: static;
+            background: transparent;
         }
     }
 }

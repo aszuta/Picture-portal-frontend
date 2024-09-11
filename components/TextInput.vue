@@ -1,7 +1,7 @@
 <template>
     <div class="TextInput">
         <label :for="name" :class="`TextInput__label TextInput__label--${name}`">{{ label }}</label>
-        <input :id="name" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" :class="`TextInput__field TextInput__field--${name}`" :type="type">
+        <input :id="name" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" :placeholder="placeholder" :class="`TextInput__field TextInput__field--${name}`" :type="type">
     </div>
 </template>
 
@@ -13,7 +13,11 @@ defineProps({
     modelValue: {
         type: String,
         default: '',
-    }
+    },
+    placeholder : {
+        type: String,
+        default: '',
+    },
 });
 </script>
 
@@ -39,16 +43,18 @@ defineProps({
         border: 1px solid #bfbfbf;
         border-radius: 7px;
         transition: 0.3s;
+        margin-bottom: 10px;
 
         &--search {
             width: 100% ;
             border: none;
             padding: 0 1vh;
-        }
+            outline: none;
+            background: none;
 
-        &:hover {
-            border: 1px solid #666666;
-            transition: 0.3s;
+            &:hover {
+                transition: 0.3s;
+            }
         }
     }
 }

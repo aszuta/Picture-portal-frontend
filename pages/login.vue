@@ -46,7 +46,8 @@ async function login() {
     &__login-container {
         display: flex;
         flex-direction: column;
-        height: 100%;
+        width: 100%;
+        padding: 30px;
         text-align: center;
     }
 

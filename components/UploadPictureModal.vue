@@ -1,26 +1,35 @@
 <template>
-    <div class="Modal" @click="$emit('close')" @keydown.esc="$emit('close')">
+    <dialog class="Modal" @click="$emit('close')" @keydown.esc="$emit('close')">
         <div class="Modal__container" @click.stop="">
             <h2 class="Modal__title">Add picture</h2>
             <form @submit.prevent="submit()" enctype="multipart/form-data" class="Modal__form">
                 <TextInput v-model="title" label="Title" type="text"/>
-                <FileInput name="file" @uploaded-file="upload"/>
-                <div 
-                    v-for="(tag, index) in tags"
-                    :key="tag"
-                    class="Modal__tag"
-                >
-                    <span @click="removeTag(index)">x</span>
-                    {{ tag }}
+                <div class="Modal__drop-zone" v-if="!file">
+                    <font-awesome-icon :icon="['fas', 'upload']" class="Modal__form-icon"/>
+                    <FileInput name="file" label="Kliknij lub przeciągnij obrazek tutaj" @uploaded-file="upload"/>
+                </div>
+                <div class="Modal__tags">
+                    <div v-for="(tag, index) in tags" :key="index" class="Modal__tag-items">
+                        <span class="Modal__tag-xmark" @click="removeTag(index)">
+                            <font-awesome-icon :icon="['fas', 'xmark']" />
+                        </span>
+                        {{ tag }}
+                    </div>
                 </div>
                 <TextInput v-model="tag" label="Tag" type="text" @keydown="addTag" @keydown.delete="removeLastTag"/>
-                <button class="Modal__form-button" type="submit">Send</button>
+                <div class="Modal__picture-preview" v-if="file">
+                    <img :src="url" class="Modal__preview-img" />
+                </div>
+                <div class="Modal__actions">
+                    <button class="Modal__form-button" v-if="file" type="reset" @click="removeFile">Reset</button>
+                    <button class="Modal__form-button" type="submit">Send</button>
+                </div>
             </form>
-            <div class="Modal__picture-preview">
-                <img :src="url" class="Modal__preview-img" />
+            <div class="Modal__close-button" @click="$emit('close')" @keydown.esc="$emit('close')" >
+                <font-awesome-icon :icon="['fas', 'xmark']" />
             </div>
         </div>
-    </div>
+    </dialog>
 </template>
 
 <script setup>
@@ -57,6 +66,12 @@ const removeLastTag = (event) => {
     if (event.target.value.length === 0) {
         removeTag(tags.length - 1);
     }
+};
+
+const removeFile = () => {
+    title.value = '';
+    file.value = '';
+    tags.value = '';
 };
 
 const submit = async () => {
@@ -115,7 +130,14 @@ const submit = async () => {
         flex-direction: column;
     }
 
-    &__tag {
+    &__tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        padding-top: 20px;
+    }
+
+    &__tag-items {
         height: 30px;
         float: left;
         margin-right: 10px;
@@ -126,6 +148,16 @@ const submit = async () => {
         border-radius: 5px;
     }
 
+    &__tag-xmark {
+        padding-left: 5px;
+        padding-right: 5px;
+
+        &:hover {
+            color: #818181;
+            cursor: pointer;
+        }
+    }
+
     &__tag-input {
         width: 100%;
         border: 1px solid #eeeded;
@@ -133,6 +165,30 @@ const submit = async () => {
         height: 59px;
         box-sizing: border-box;
         padding: 0 10px;
+    }
+
+    &__drop-zone {
+        height: 150px;
+        width: 100%;
+        margin: 0.3rem 0;
+        background: #f5f3f3;
+        border: 2px solid white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        position: relative;
+        transition: 0.3s;
+  
+        &:hover {
+            border: 2px solid #e6ba37;
+            transition: 0.3s;
+        }
+    }
+
+    &__form-icon {
+        font-size: 2rem;
+        margin-bottom: 1.1rem;
     }
 
     &__form-button {
@@ -162,9 +218,51 @@ const submit = async () => {
         }
     }
 
+    &__actions {
+        display: inherit;
+        justify-content: space-between;
+    }
+
     &__preview-img {
         width: 100%;
         height: auto;
+    }
+
+    &__close-button {
+        position: absolute;
+        font-size: 1.6rem;
+        top: 0.8rem;
+        right: 0.8rem;
+        color: #fff;
+        transition: 0.3s;
+        cursor: pointer;
+    
+        &:hover {
+            color: #414040;
+            transition: 0.3s;
+        }
+    }
+}
+
+@media screen and (max-width: 650px) {
+    .Modal {
+        padding: 0;
+        padding-left: 0;
+        padding-right: 0;
+        z-index: 6;
+
+        &__container {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            z-index: 6;
+        }
+
+        &__close-button {
+            color: #414040;
+            top: 1rem;
+            right: 1rem;
+        }
     }
 }
 </style>

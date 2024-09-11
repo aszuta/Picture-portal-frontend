@@ -24,6 +24,7 @@ const props = defineProps({
         display: flex;
         align-items: center;
         gap: 10px;
+        margin-bottom: 15px;
     }
 
     &__avatar {
@@ -52,7 +53,7 @@ const props = defineProps({
     }
 }
 
-@media screen and (min-width: 768px){
+@media screen and (min-width: 768px) {
     .CommentsSection {
         max-width: 1320px;
         width: 100%;

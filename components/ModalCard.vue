@@ -4,11 +4,14 @@
         <div class="PicturesSection__container">
             <div class="PicturesSection__grid">
                 <GridCard
-                    v-for="picture in props.relatedPictures"
+                v-for="(picture, index) in props.relatedPictures"
                     :key="picture.id"
                     :id="picture.id"
                     :name="picture.title"
                     :path="picture.filepath"
+                    :username="picture.username"
+                    :pictures="props.relatedPictures"
+                    :index="index"
                 />
             </div>
         </div>
@@ -48,7 +51,7 @@ const props = defineProps({
     }
 }
 
-@media screen and (min-width: 768px){
+@media screen and (min-width: 768px) {
     .PicturesSection {
 
         &__container {
@@ -57,5 +60,46 @@ const props = defineProps({
             margin-inline: auto;
         }
     }
+}
+
+@media screen and (max-width: 674px) {
+    .PicturesSection {
+
+        &__container {
+            width: 100%;
+            margin-inline: auto;
+        }
+
+        &__grid {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+    }
+}
+
+@media screen and (min-width: 675px) {
+    .PicturesSection {
+    
+    &__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+}
+
+@media screen and (min-width: 1020px) {
+    .PicturesSection {
+
+    &__grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+}
+
+@media screen and (min-width: 1320px) {
+    .PicturesSection {
+
+    &__grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
 }
 </style>

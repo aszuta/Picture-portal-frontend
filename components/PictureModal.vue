@@ -1,37 +1,38 @@
 <template>
-    <div class="Modal" @click="$emit('close')" @keydown.esc="$emit('close')">
+    <dialog class="Modal" @click="$emit('close')" @keydown.esc="$emit('close')">
         <div class="Modal__container" @click.stop="">
             <div class="Modal__previous">
                 <NuxtLink :to="{
                         name: 'picture-id',
                         params: { id: props.id}
-                    }" class="Modal__previous-button" @click="showPrevPhoto(props.number)">
+                    }" class="Modal__previous-button" @click="showPrevPhoto">
                     <font-awesome-icon :icon="['fas', 'angle-left']" />
                 </NuxtLink>
             </div>
             <div class="Modal__content">
                 <PictureCard
-                    :id="props.id"
-                    :title="data.title"
-                    :path="data.filepath"
-                    :createdAt="data.createdAt"
-                    :tags="data.tags"
+                    :pictureCard="props.data"
                 />
-                <Comment />
+                <CommentContainer
+                    :comments="props.data.comments"
+                />
                 <ModalCard 
-                    :relatedPictures="relatedPictures"
+                    :relatedPictures="props.data.related"
                 />
             </div>
             <div class="Modal__next">
                 <NuxtLink :to="{
                         name: 'picture-id',
                         params: { id: props.id}
-                    }" class="Modal__next-button" @click="showNextPhoto(props.number)">
+                    }" class="Modal__next-button" @click="showNextPhoto">
                     <font-awesome-icon :icon="['fas', 'angle-right']" />
                 </NuxtLink>
             </div>
+            <div class="Modal__close-button" @click="closeModal" @keydown.esc="$emit('close')" >
+                <font-awesome-icon :icon="['fas', 'xmark']" />
+            </div>
         </div>
-    </div>
+    </dialog>
 </template>
 
 <script setup>
@@ -40,14 +41,12 @@ import { usePictureStore } from '~/store/picture';
 const props = defineProps({
     id: Number,
     fileForm: Boolean,
-    picture: Object,
-    relatedPictures: Object,
     data: Object,
 });
 
-const emit = defineEmits(['minus', 'plus']);
+const emit = defineEmits(['minus', 'plus', 'close']);
 
-async function showPrevPhoto(param) {
+async function showPrevPhoto() {
     const result = await usePictureStore().showPrevPhoto();
     emit('minus', result);
 };
@@ -55,7 +54,12 @@ async function showPrevPhoto(param) {
 async function showNextPhoto() {
     const result = await usePictureStore().showNextPhoto();
     emit('plus', result);
-} ;
+};
+
+function closeModal() {
+    const isModalActive = false;
+    emit('close', isModalActive);
+}
 </script>
 
 <style lang="scss">
@@ -66,7 +70,7 @@ async function showNextPhoto() {
     left: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
+    overflow: hidden;
     display: block;
     padding: 0 20px;
     padding-left: 120px;
@@ -111,6 +115,10 @@ async function showNextPhoto() {
     }
 
     &__content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
         width: 100%;
     }
 

@@ -4,32 +4,28 @@
             <header class="PictureSection__header-container">
                 <div class="PictureSection__author">
                     <span class="PictureSection__author-info">
-                        <button class="PictureSection__avatar">
+                        <NuxtLink :to="`/profile/${props.pictureCard.createdBy}`" class="PictureSection__avatar">
                             <font-awesome-icon :icon="['fas', 'user']" />
-                        </button>
-                        <button class="PictureSection__name">test</button>
+                        </NuxtLink>
+                        <NuxtLink :to="`/profile/${props.pictureCard.createdBy}`" class="PictureSection__name">{{ props.pictureCard.username }}</NuxtLink>
                     </span>
                 </div>
                 <div class="PictureSection__buttons">
-                    <button class="PictureSection__button" :class="isLikeActive ? 'PictureSection__button--like-active' : ''" @click="like()">
+                    <button class="PictureSection__button" :class="props.pictureCard.isLiked ? 'PictureSection__button--like-active' : ''" @click="like()">
                         <font-awesome-icon :icon="['fas', 'heart']"/>
                     </button>
-                    <button class="PictureSection__button" :class="isSaveActive ? 'PictureSection__button--save-active' : ''" @click="save()">
+                    <button class="PictureSection__button" :class="props.pictureCard.isSaved ? 'PictureSection__button--save-active' : ''" @click="save()">
                         <font-awesome-icon :icon="['fas', 'plus']" />
                     </button>
                 </div>
             </header>
         </div>
-        <div class="PictureSection__picture">
-            <img :src="`http://localhost:8000/${props.pictureCard.filepath}`" alt="">
+        <div class="PictureSection__picture-container">
+            <img :src="`http://localhost:8000/${props.pictureCard?.filepath}`" alt="" class="PictureSection__picture">
         </div>
         <div class="PictureSection__info">
             <div class="PictureSection__info-container">
-                <div class="PictureSection__container-likes">
-                    Likes
-                    <div class="PictureSection__likes">90</div>
-                </div>
-                <h1 class="PictureSection__container-title">{{ props.pictureCard.title }}</h1>
+                <h1 class="PictureSection__container-title">{{ props.pictureCard?.title }}</h1>
                 <div class="PictureSection__container-description">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                 </div>
@@ -41,7 +37,7 @@
                 </div>
             </div>
             <div class="PictureSection__tags">
-                <NuxtLink class="PictureSection__tags-item" v-for="(tag, index) in props.pictureCard.tags" :key="index">
+                <NuxtLink class="PictureSection__tags-item" v-for="(tag, index) in props.pictureCard?.tags" :key="index" :to="`/tag/${tag.name}`" >
                     {{ tag.name }}
                 </NuxtLink>
             </div>
@@ -63,72 +59,66 @@ const isLikeActive = ref(false);
 const isSaveActive = ref(false);
 
 async function like() {
-    try {
-        const payload = {
-        postId: props.pictureCard.id,
-        vote: {
-            userId: user.id,
-            voteType: 'voteUp',
-        },
-    };
+    if (isLoggedIn) {
+        try {
+            const payload = {
+                postId: props.pictureCard?.id,
+                vote: {
+                    userId: user.id,
+                    voteType: 'voteUp',
+                },
+            };
 
-    if (isLikeActive.value === false) {
-        await api(`/api/vote/${payload.postId}`, {
-            method: 'POST',
-            body: payload.vote,
-        }).then(() => isLikeActive.value = true);
+        if (isLikeActive.value === false) {
+            await api(`/api/vote/${payload.postId}`, {
+                method: 'POST',
+                body: payload.vote,
+            }).then(() => isLikeActive.value = true);
+        } else {
+            await api(`/api/vote?postId=${payload.postId}&userId=${payload.vote.userId}`,{
+                method: 'DELETE'
+            }).then(() => isLikeActive.value = false);
+        }
+        } catch (error) {
+            console.log(error);
+        }
     } else {
-        await api(`/api/vote?postId=${payload.postId}&userId=${payload.vote.userId}`,{
-            method: 'DELETE'
-        }).then(() => isLikeActive.value = false);
-    }
-    } catch (error) {
-        console.log(error);
-    }
+            router.push('/login');
+        }
 };
 
 async function save() {
-    try {
-        const payload = {
-        userId: user.id,
-        postId: props.pictureCard.id,
-    };
-    
-    if (isSaveActive.value === false) {
-        await api('/api/savePost', {
-            method: 'POST',
-            body: payload,
-        }).then(() => isSaveActive.value = true);
+    if (isLoggedIn) {
+        try {
+            const payload = {
+                userId: user.id,
+                postId: props.pictureCard.id,
+            };
+        
+        if (isSaveActive.value === false) {
+            await api('/api/savePost', {
+                method: 'POST',
+                body: payload,
+            }).then(() => isSaveActive.value = true);
+        } else {
+            await api(`/api/savePost?userId=${payload.userId}&postId=${payload.postId}`, {
+                method: 'DELETE'
+            }).then(() => isSaveActive.value = false);
+        }
+        } catch (error) {
+            console.log(error);
+        }
     } else {
-        await api(`/api/savePost?userId=${payload.userId}&postId=${payload.postId}`, {
-            method: 'DELETE'
-        }).then(() => isSaveActive.value = false);
-    }
-    } catch (error) {
-        console.log(error);
+        router.push('/login');
     }
 };
-
-async function getLikes() {
-    const data = await api(`/api/vote?postId=${props.pictureCard.id}&userId=${user.id}`);
-    if (data.voteType === 'voteUp') isLikeActive.value = true;
-};
-
-async function getSavedPosts() {
-    const result = await api(`/api/savePost?userId=${user.id}&postId=${props.pictureCard.id}`);
-    console.log(props.pictureCard.id);
-    if (result === 'true') isSaveActive.value = true;
-}
-
-if (isLoggedIn) {
-    getLikes();
-    getSavedPosts();
-}
 </script>
 
 <style lang="scss">
 .PictureSection {
     padding: 1rem 2rem;
+    max-width: 1440px;
+    width: 100%;
 
     &__header {
         position: relative;
@@ -152,15 +142,21 @@ if (isLoggedIn) {
     }
 
     &__avatar {
+        display: inherit;
+        align-items: center;
+        justify-content: center;
         background-color: #8c8c8c;
         border-radius: 20px;
         height: 40px;
         width: 40px;
+        color: black;
     }
 
     &__name {
         display: block;
         font-size: 16px;
+        background: none;
+        color: #6d6d6d;
     }
 
     &__buttons {
@@ -208,9 +204,14 @@ if (isLoggedIn) {
         }
     }
 
-    &__picture {
+    &__picture-container {
         display: flex;
         justify-content: center;
+    }
+
+    &__picture {
+        min-width: 300px;
+        max-width: 1440px;
     }
 
     &__info {
@@ -220,18 +221,6 @@ if (isLoggedIn) {
 
     &__info-container {
         max-width: 600px;
-    }
-
-    &__container-likes {
-        display: flex;
-        flex-direction: column;
-        color: #767676;
-        font-size: 14px;
-    }
-
-    &__likes {
-        color: black;
-        font-weight: 500;
     }
 
     &__container-title {
@@ -268,6 +257,7 @@ if (isLoggedIn) {
     &__tags-item {
         display: inline-block;
         background-color: #e6e6e6;
+        color: black;
         padding: 5px 10px;
         border-radius: 3px;
 
@@ -275,6 +265,14 @@ if (isLoggedIn) {
             background-color: #d9d9d9;
             cursor: pointer;
         }
+    }
+}
+
+@media screen and (max-width: 650px) {
+    .PictureSection {
+        padding: 0;
+        width: 100%;
+
     }
 }
 </style>
